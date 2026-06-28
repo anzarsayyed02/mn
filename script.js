@@ -169,6 +169,28 @@ function renderModalContent(practical, text) {
   meta.className = "modal-meta";
   meta.textContent = `${practical.name} • ${practical.text}`;
 
+  const copyButton = document.createElement("button");
+  copyButton.type = "button";
+  copyButton.className = "action-btn modal-copy-btn";
+  copyButton.textContent = "Copy text";
+  copyButton.addEventListener("click", async () => {
+    const content = pre.textContent;
+    try {
+      await navigator.clipboard.writeText(content);
+      copyButton.textContent = "Copied!";
+      copyButton.disabled = true;
+      window.setTimeout(() => {
+        copyButton.textContent = "Copy text";
+        copyButton.disabled = false;
+      }, 1500);
+    } catch (error) {
+      copyButton.textContent = "Copy failed";
+      window.setTimeout(() => {
+        copyButton.textContent = "Copy text";
+      }, 1500);
+    }
+  });
+
   const pre = document.createElement("pre");
   pre.id = "modalText";
   pre.textContent = text || "No content available for this practical yet.";
@@ -176,6 +198,7 @@ function renderModalContent(practical, text) {
   modalBody.appendChild(image);
   modalBody.appendChild(title);
   modalBody.appendChild(meta);
+  modalBody.appendChild(copyButton);
   modalBody.appendChild(pre);
 }
 
